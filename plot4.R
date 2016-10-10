@@ -1,0 +1,26 @@
+dat<-read.table("household_power_consumption.txt", sep=";", header=TRUE, na.strings="?")
+dat$Date_Time<-paste(dat$Date, dat$Time)
+dat$Date_Time<-strptime(dat$Date_Time, "%d/%m/%Y %H:%M:%S")
+dat$Date<-strptime(dat$Date, "%d/%m/%Y")
+dat$Date<-as.Date(dat$Date)
+dat1<-subset(dat, Date==as.Date("2007-02-01"))
+dat2<-subset(dat, Date==as.Date("2007-02-02"))
+dat3<-rbind(dat1,dat2)
+png(filename="plot4.png", width = 480, height = 480, units = "px")
+par(mfrow=c(2,2), mar=c(4,4,2,2))
+#Top Left Plot
+with(dat3, plot(Date_Time, Global_active_power, xlab = "", ylab = "Global Active Power", type="n"))
+with(dat3, lines(Date_Time, Global_active_power))
+#Top Right Plot
+with(dat3, plot(Date_Time, Voltage, xlab = "datetime", ylab = "Voltage", type="n"))
+with(dat3, lines(Date_Time, Voltage))
+#Bottom Left Plot
+with(dat3, plot(Date_Time, Sub_metering_1, xlab = "", ylab = "Energy sub metering", type="n"))
+with(dat3, lines(Date_Time, Sub_metering_1, col="black"))
+with(dat3, lines(Date_Time, Sub_metering_2, col="red"))
+with(dat3, lines(Date_Time, Sub_metering_3, col="blue"))
+legend("topright", lty = c("solid", "solid", "solid"), col=c("black", "red", "blue"), legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))
+#Bottom Right Plot
+with(dat3, plot(Date_Time, Global_reactive_power, xlab = "datetime", type="n"))
+with(dat3, lines(Date_Time, Global_reactive_power))
+dev.off()
